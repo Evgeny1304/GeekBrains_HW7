@@ -61,19 +61,57 @@ function getFullCartCount(objCart){
 function getCartTotal(){
     var $totalCart = document.createElement("div");
     $totalCart.classList.add("cart-block");
+    var $cartNull = document.createElement("p");
+    $cartNull.classList.add("cart-total");
+    $cartNull.style.display = "none";
+    $cartNull.textContent = "Корзина пуста";
+    $totalCart.appendChild($cartNull);
     var $totalCount = document.createElement("p");
     $totalCount.classList.add("cart-total");
+    $totalCount.style.display = "none";
+    $totalCount.textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
     $totalCart.appendChild($totalCount);
     var $totalCost = document.createElement("p");
     $totalCost.classList.add("cart-total");
+    $totalCost.style.display = "none";
+    $totalCost.textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
     $totalCart.appendChild($totalCost);
     var $buttonClear = document.createElement("button");
     $buttonClear.classList.add("button-clear");
     $buttonClear.textContent = "Очистить корзину";
     $totalCart.appendChild($buttonClear);
-    $totalCart.childNodes[0].textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
-    $totalCart.childNodes[1].textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
     $container.appendChild($totalCart);
+    if (Object.keys(shopCartCount).length === 0){
+        $cartNull.style.display = "block";
+        $totalCount.style.display = "none";
+        $totalCost.style.display = "none";
+        $buttonClear.style.display = "none";
+    } else{
+        $cartNull.style.display = "none";
+        $totalCount.style.display = "block";
+        $totalCost.style.display = "block";
+        $buttonClear.style.display = "block";
+    }
+}
+
+function cartCheck(){
+    var $totalCartText = document.getElementsByClassName("cart-total");
+    var $buttonNextCart = document.getElementsByClassName("button-nextCart")[0];
+    var $buttonClear = document.getElementsByClassName("button-clear")[0];
+    if (Object.keys(shopCartCount).length === 0){
+        $totalCartText[0].style.display = "block";
+        $totalCartText[1].style.display = "none";
+        $totalCartText[2].style.display = "none";
+        $buttonNextCart.style.display = "none";
+        $buttonClear.style.display = "none";
+    } else{
+        $totalCartText[0].style.display = "none";
+        $totalCartText[1].style.display = "block";
+        $totalCartText[1].textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
+        $totalCartText[2].style.display = "block";
+        $totalCartText[2].textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
+        $buttonClear.style.display = "block";
+    }
 }
 
 function getProductCatalog(){
@@ -236,7 +274,6 @@ var $buttonsDelete = document.getElementsByClassName("button-delete");
 function handleButtonClick(event){
     var idProduct = this.getAttribute("data-id");
     var $productCart = document.getElementById(idProduct);
-    var $totalCart = document.getElementsByClassName("cart-block")[0];
     $productCart.style.display = "flex";
     $buttonNextCart.style.display = "block";
     if (shopCart[idProduct] != undefined){
@@ -248,15 +285,13 @@ function handleButtonClick(event){
     }
     $productCart.childNodes[5].textContent = "cost: "+shopCart[idProduct];
     $productCart.childNodes[6].textContent = "count: "+shopCartCount[idProduct];
-    $totalCart.childNodes[0].textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
-    $totalCart.childNodes[1].textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
+    cartCheck();
     event.preventDefault();
 }
 
 function handleButtonMinus(event){
     var idProduct = this.getAttribute("data-id");
     var $productCart = document.getElementById(idProduct);
-    var $totalCart = document.getElementsByClassName("cart-block")[0];
     if (shopCartCount[idProduct] > 1){
         shopCartCount[idProduct]--;
         shopCart[idProduct] -= productsCatalog[idProduct];
@@ -267,20 +302,17 @@ function handleButtonMinus(event){
     }
     $productCart.childNodes[5].textContent = "cost: "+shopCart[idProduct];
     $productCart.childNodes[6].textContent = "count: "+shopCartCount[idProduct];
-    $totalCart.childNodes[0].textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
-    $totalCart.childNodes[1].textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
+    cartCheck();
     event.preventDefault();
 }
 
 function handleButtonDelete(event) {
     var idProduct = this.getAttribute("data-id");
     var $productCart = document.getElementById(idProduct);
-    var $totalCart = document.getElementsByClassName("cart-block")[0];
     delete shopCartCount[idProduct];
     delete shopCart[idProduct];
     $productCart.style.display = "none";
-    $totalCart.childNodes[0].textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
-    $totalCart.childNodes[1].textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
+    cartCheck();
     event.preventDefault();
 }
 
@@ -295,7 +327,6 @@ for (var i = 0; i < $buttons.length; i++) {
 var $buttonClear = document.getElementsByClassName("button-clear")[0];
 function handleButtonClearCart(event){
     var $productsCart = document.getElementsByClassName("product-cart");
-    var $totalCart = document.getElementsByClassName("cart-block")[0];
     var $buttonNextCart = document.getElementsByClassName("button-nextCart")[0];
     shopCartCount = {};
     shopCart = {};
@@ -303,8 +334,7 @@ function handleButtonClearCart(event){
         $productsCart[j].style.display = "none";
     }
     $buttonNextCart.style.display = "none";
-    $totalCart.childNodes[0].textContent = "Количество товаров в корзине: "+getFullCartCount(shopCartCount);
-    $totalCart.childNodes[1].textContent = "Итоговая сумма: "+getFullCartSum(shopCart);
+    cartCheck();
     event.preventDefault();
 }
 
