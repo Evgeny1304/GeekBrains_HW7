@@ -271,7 +271,7 @@ var $buttonsPlus = document.getElementsByClassName("button-plus");
 var $buttonsMinus = document.getElementsByClassName("button-minus");
 var $buttonsDelete = document.getElementsByClassName("button-delete");
 
-function handleButtonClick(event){
+function handleButtonAddCartPlus(event){
     var idProduct = this.getAttribute("data-id");
     var $productCart = document.getElementById(idProduct);
     $productCart.style.display = "flex";
@@ -317,8 +317,8 @@ function handleButtonDelete(event) {
 }
 
 for (var i = 0; i < $buttons.length; i++) {
-    $buttons[i].addEventListener('click', handleButtonClick);
-    $buttonsPlus[i].addEventListener('click', handleButtonClick);
+    $buttons[i].addEventListener('click', handleButtonAddCartPlus);
+    $buttonsPlus[i].addEventListener('click', handleButtonAddCartPlus);
     $buttonsMinus[i].addEventListener('click', handleButtonMinus);
     $buttonsDelete[i].addEventListener('click', handleButtonDelete);
 }
